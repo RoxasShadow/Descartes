@@ -44,7 +44,7 @@ Cinch::Bot.new {
   end
 
   on :message, 'get' do |m|
-    m.reply m.bot.plugins.last
+    m.reply m.bot.plugins.join ', '
   end
 
 }.start
