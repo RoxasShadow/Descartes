@@ -20,7 +20,7 @@ class Descartes
   class Treccani
     include Cinch::Plugin
 
-    match /^!trec ([a-zA-Z]+)$/
+    match /trec ([a-zA-Z]+)/
 
     def execute(m, word)
       url = "http://www.treccani.it/vocabolario/tag/#{word}"
