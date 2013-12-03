@@ -16,7 +16,7 @@ class Descartes
   class Hi
     include Cinch::Plugin
 
-    match 'hello'
+    match 'hello', use_prefix => false
 
     def execute(m)
       m.reply "hello, #{m.user.nick}"
