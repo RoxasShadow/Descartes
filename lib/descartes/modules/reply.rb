@@ -16,10 +16,11 @@ class Descartes
 	class Reply
 		include Cinch::Plugin
 
-		match /Descartes.*\?/, :use_prefix => false
+		match /(.*)\?/, :use_prefix => @nickname
 
 		def execute(m)
-			replies = [].tap {|ary| File.read('modules/reply/replies.txt').each_line { |line| ary << line } }
+      file    = File.expand_path '../reply/replies.txt', __FILE__
+			replies = [].tap { |ary| File.read(file).each_line { |line| ary << line } }
 			m.reply replies[rand(1..20)]
 		end
 	end

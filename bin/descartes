@@ -14,10 +14,11 @@
 
 require 'descartes'
 
-nickname = ARGV[0]     || 'Descartes'
-server   = ARGV[1]     || 'irc.rizon.net'
-channels = ARGV[2..-1] || ['#aggvistnurummor']
-plugins  = Descartes.load
+nickname  = ARGV[0]     || 'Descartes'
+@nickname = nickname
+server    = ARGV[1]     || 'irc.rizon.net'
+channels  = ARGV[2..-1] || ['#aggvistnurummor']
+plugins   = Descartes.load
 
 Cinch::Bot.new {
   configure do |c|

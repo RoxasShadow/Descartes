@@ -12,7 +12,7 @@ Gem::Specification.new { |s|
  	s.licenses      = 'WTFPL'
 
   s.require_paths = ['lib']
-  s.files         = Dir.glob('lib/**/*.rb')
+  s.files         = Dir.glob('lib/**/*')
   s.executables = 'descartes'
 
   s.add_runtime_dependency 'cinch'
