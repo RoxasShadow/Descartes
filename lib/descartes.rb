@@ -14,5 +14,6 @@
 
 require 'cinch'
 require 'cinch/plugins/login'
+require 'descartes/utils'
 require 'descartes/descartes'
 require 'descartes/version'
