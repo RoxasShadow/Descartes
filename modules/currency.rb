@@ -24,6 +24,9 @@ class Descartes
       amount = m.params[1].match /[0-9]+/
       from   = m.params[1].match(/[A-Za-z]+ to/).to_s[0..-4]
       to     = m.params[1].match(/to [A-Za-z]+/).to_s[3..-1]
+      
+      from = 'jpy' if from == 'yen'
+      to   = 'jpy' if to   == 'yen'
 
       url = "http://www.xe.com/currencyconverter/convert/?Amount=#{amount}&From=#{from}&To=#{to}"
       m.reply Nokogiri::HTML(open(url)).xpath('//tr[@class="uccRes"]').children[4].text
