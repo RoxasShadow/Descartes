@@ -13,17 +13,17 @@
 ##
 
 class Descartes
-	class Reply
-		include Cinch::Plugin
+  class Sindaco
+    include Cinch::Plugin
 
-		match /#{@@nickname}.*\?/, :use_prefix => false
+    match /Sindaco/
 
-		def execute(m)
-      file    = File.expand_path '../reply/replies.txt', __FILE__
-			replies = [].tap { |ary|
+    def execute(m)
+      file    = File.expand_path '../reply/sindaco.txt', __FILE__
+      replies = [].tap { |ary|
         File.read(file).each_line { |line| ary << line unless line.empty? }
       }
-			m.reply replies[rand(1..replies.length)]
-		end
-	end
-end	
+      m.reply replies[rand(1..replies.length)]
+    end
+  end
+end 

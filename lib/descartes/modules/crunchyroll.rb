@@ -17,7 +17,7 @@ require 'crunchyroll'
 class Descartes
   class Crunchybot
     include Cinch::Plugin
-    match /\.cr (.+)/, :use_prefix => false
+    match /\.cr) (.+)/, :use_prefix => false
 
     def execute(m)
       series = Crunchyroll::find m.params[1].split('.cr ')[1]

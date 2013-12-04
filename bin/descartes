@@ -36,4 +36,12 @@ Cinch::Bot.new {
     m.reply m.bot.plugins.join ', '
   end
 
+  on :message, '!è' do |m|
+    m.reply 'È'
+  end
+
+  on :message, '!"' do |m|
+    m.reply '“  ”'
+  end
+
 }.start
