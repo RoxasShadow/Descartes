@@ -16,7 +16,7 @@ class Descartes
 	class Reply
 		include Cinch::Plugin
 
-		match /(.*)\?/, :use_prefix => @nickname
+		match /#{@@nickname}.*\?/, :use_prefix => false
 
 		def execute(m)
       file    = File.expand_path '../reply/replies.txt', __FILE__
