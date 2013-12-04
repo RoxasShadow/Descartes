@@ -16,15 +16,14 @@ require 'nokogiri'
 require 'open-uri'
 
 class Descartes
-	class Treccani
-		include Cinch::Plugin
-			
-		match /word ([a-zA-Z]+)$/
+  class Treccani
+    include Cinch::Plugin
+    match /syn ([a-zA-Z]+)/
 
-		def execute(m, word)
-			url = "http://www.treccani.it/vocabolario/#{word}_(Sinonimi-e-Contrari)/"
-			page = Nokogiri::HTML(open(url))
-			m.reply page.xpath('//div[@class="spiega attacco"]/p').text.strip + " di piu` qui: #{url}"
-		end
-	end
+    def execute(m, word)
+      url = "http://www.treccani.it/vocabolario/#{word}_(Sinonimi-e-Contrari)/"
+      page = Nokogiri::HTML(open(url))
+      m.reply page.xpath('//div[@class="spiega attacco"]/p').text.strip + " di più qui: #{url}"
+    end
+  end
 end
