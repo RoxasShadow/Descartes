@@ -18,7 +18,7 @@ class Descartes
 
     match /rpn (.+)/, method: :rpn
     def rpn(m)
-      query = m.params.split('!rpn ')[1]
+      query = m.params[1].split('!rpn ')[1]
 
       m.reply [].tap { |res|
         query.split.each { |i|
