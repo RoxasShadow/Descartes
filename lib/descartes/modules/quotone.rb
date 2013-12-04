@@ -1,4 +1,3 @@
-#encoding: UTF-8
 ##
 ##            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 ##                    Version 2, December 2004
@@ -11,26 +10,26 @@
 ##   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 ## 
 ##  0. You just DO WHAT THE FUCK YOU WANT TO.
-###
+##
 
 require 'open-uri'
-require 'nokogiri'
+require 'json'
 
 class Descartes
-  class Url
+  class Quotone
     include Cinch::Plugin
-    match /http(s)?:\/\/(\S+)/, :use_prefix => false
 
-    def execute(m, ssl, url)
-      begin
-        page = Nokogiri::HTML(open("http#{ssl}://#{url}").read, nil, 'utf-8')
+    match /quotone/
 
-        if url.match('youtube.com|youtu.be') != nil
-          m.reply page.css('//title').first.text.chomp(' - YouTube')
-        else
-          m.reply page.css('//title').first.text.strip
-        end
-      rescue; end
+    def get(url)
+      open(url) { |f|
+        quote = JSON.parse f.read
+        return "\##{quote['id']} - #{quote['source']} (#{quote['tags']})\n#{quote['quote'].nl2(' / ').decode}"
+      }
+    end
+
+    def execute(m)
+      m.reply get 'http://www.quotone.unsigned.it/api/random.json'
     end
   end
 end

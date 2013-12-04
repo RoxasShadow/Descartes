@@ -14,6 +14,6 @@
 
 class Descartes
   def self.version
-    '0.3.7.3'
+    '0.3.8'
   end
 end

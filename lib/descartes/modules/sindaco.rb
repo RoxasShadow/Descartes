@@ -20,10 +20,9 @@ class Descartes
 
     def execute(m)
       file    = File.expand_path '../reply/sindaco.txt', __FILE__
-      replies = [].tap { |ary|
-        File.read(file).each_line { |line| ary << line unless line.empty? }
-      }
-      m.reply replies[rand(1..replies.length)]
+      m.reply [].tap { |ary|
+        File.read(file).each_line { |line| ary << line unless line.strip.empty? }
+      }.sample
     end
   end
 end 

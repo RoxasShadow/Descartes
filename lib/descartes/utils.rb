@@ -11,4 +11,13 @@ class String
       s.gsub! 'and', 'e'
     }
   end
+
+  def nl2(wat)
+    self.gsub(/\r\n?/, wat)
+  end
+  
+  def decode
+    require 'htmlentities'
+    HTMLEntities.new.decode self
+  end
 end
