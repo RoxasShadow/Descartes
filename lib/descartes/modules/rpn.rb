@@ -17,8 +17,8 @@ class Descartes
     include Cinch::Plugin
 
     match /rpn (.+)/, method: :rpn
-    def rpn(m, query)
-      query = m.split('!rpn ')[1]
+    def rpn(m)
+      query = m.params.split('!rpn ')[1]
 
       m.reply [].tap { |res|
         query.split.each { |i|
