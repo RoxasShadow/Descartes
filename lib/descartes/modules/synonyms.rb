@@ -16,7 +16,7 @@ require 'nokogiri'
 require 'open-uri'
 
 class Descartes
-  class Treccani
+  class Synonyms
     include Cinch::Plugin
     match /syn ([a-zA-Z]+)/
 
