@@ -19,7 +19,7 @@ class Descartes
   class Quotone
     include Cinch::Plugin
 
-    match /quotone/
+    match /quotone( [0-9]+){0,1}/
 
     def get(url)
       open(url) { |f|
@@ -28,8 +28,15 @@ class Descartes
       }
     end
 
-    def execute(m)
-      m.reply get 'http://www.quotone.unsigned.it/api/random.json'
+    def execute(m, num=-1)
+      puts "ok, num = #{num}"
+      if -1 == num
+        m.reply get 'http://www.quotone.unsigned.it/api/random.json'
+      else
+        #should remove useless num
+        num = num.to_i.to_s
+        m.reply get "http://www.quotone.unsigned.it/api/get/#{num}.json"
+      end 
     end
   end
 end
