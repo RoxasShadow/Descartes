@@ -28,15 +28,8 @@ class Descartes
       }
     end
 
-    def execute(m, num=-1)
-      puts "ok, num = #{num}"
-      if -1 == num
-        m.reply get 'http://www.quotone.unsigned.it/api/random.json'
-      else
-        #should remove useless num
-        num = num.to_i.to_s
-        m.reply get "http://www.quotone.unsigned.it/api/get/#{num}.json"
-      end 
+    def execute(m, num = nil)
+      m.reply get(num ? "http://www.quotone.unsigned.it/api/get/#{num.to_i}.json" : 'http://www.quotone.unsigned.it/api/random.json')
     end
   end
 end
