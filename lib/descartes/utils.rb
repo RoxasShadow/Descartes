@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class String
   def to_ita
     day_eng = [ 'Sundays',   'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays',  'Saturdays' ]
