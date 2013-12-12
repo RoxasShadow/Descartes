@@ -66,6 +66,7 @@ class Descartes
       File.open(File.join(File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'), 'w'){ |f|
           f.write YAML.dump(nicks);
         }
+      m.reply "Ok, added user #{lastfmnick}"
     end
 
     def removeuser(m, lastfmnick)
@@ -74,14 +75,20 @@ class Descartes
       File.open(File.join(File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'), 'w'){ |f|
           f.write YAML.dump(nicks);
         }
+      m.reply "Ok, removed user #{lastfmnick}"
     end
 
     def showrelations(m, usernicks)
       usernick_list = usernicks.split " "
+      found = false
       #read a file N times costs more than read a file just once
       lastfm_nicks_archive().each {|usernick, lastfmnick|
+                              found = true if usernick_list.include? usernick
                               m.reply "#{usernick} is known as #{lastfmnick}" if usernick_list.include? usernick
                             }
+      unless found
+        m.reply 'I don\'t know anthing, I know only what I know.'
+      end 
     end 
   
   end
