@@ -39,7 +39,8 @@ class Descartes
       res = search query
 
       if res.empty?
-        m.reply 'No results found.'
+        # m.reply 'No results found.'
+        m.reply 'Nessun risultato.'
       else
         res[0..3].each { |r| m.reply "#{r[:title]} - #{r[:url]}" }
       end

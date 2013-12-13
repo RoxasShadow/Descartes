@@ -18,12 +18,16 @@ require 'open-uri'
 class Descartes
   class Synonyms
     include Cinch::Plugin
-    match /syn ([a-zA-Z]+)/
+    match /syn (.+)/
 
-    def execute(m, word)
-      url = "http://www.treccani.it/vocabolario/#{word}_(Sinonimi-e-Contrari)/"
-      page = Nokogiri::HTML(open(url))
-      m.reply page.xpath('//div[@class="spiega attacco"]/p').text.strip + " di più qui: #{url}"
+    def execute(m, word) # search synonyms of a term in the most famous italian vocabulary
+      begin
+        url = "http://www.treccani.it/vocabolario/#{word}_(Sinonimi-e-Contrari)/"
+        page = Nokogiri::HTML(open(url))
+        m.reply page.at_xpath('//div[@class="spiega attacco"]/p').text.strip + " di più qui: #{url}"
+      rescue
+        m.reply 'Vocabolo non trovato.'
+      end
     end
   end
 end

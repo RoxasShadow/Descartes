@@ -15,17 +15,19 @@
 require 'nokogiri'
 require 'open-uri'
 
-
 class Descartes
   class Treccani
     include Cinch::Plugin
+    match /trec (.+)/
 
-    match /trec ([a-zA-Z]+)/
-
-    def execute(m, word)
-      url = "http://www.treccani.it/vocabolario/tag/#{word}"
+    def execute(m, word) # search the meaning of a term in the most famous italian vocabulary
+      url  = "http://www.treccani.it/vocabolario/tag/#{word}"
       page = Nokogiri::HTML(open(url))
-      m.reply page.xpath('//li[@class="result fs"]/p').text.strip + " di più qui: #{url}"
+      unless page.at_xpath('//div[@class="intro"]').text.include? 'prodotto alcun risultato'
+        m.reply page.at_xpath('//li[@class="result fs"]/p').text.strip + " di più qui: #{url}"  
+      else
+        m.reply 'Vocabolo non trovato.'
+      end
     end
   end
 end

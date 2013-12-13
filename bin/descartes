@@ -16,14 +16,14 @@
 
 require 'descartes'
 
-@@nickname  = ARGV[0]   || 'Descartes'
+nickname  = ARGV[0]     || 'Descartes'
 server    = ARGV[1]     || 'irc.rizon.net'
 channels  = ARGV[2..-1] || ['#aggvistnurummor']
 plugins   = Descartes.load
 
 Cinch::Bot.new {
   configure do |c|
-    c.nick     = @@nickname
+    c.nick     = nickname
     c.realname = 'Descartes'
     c.user     = 'Descartes'
     c.server   = server
@@ -46,7 +46,7 @@ Cinch::Bot.new {
   end
 
   on :message, '!"' do |m|
-    m.reply '“...”'
+    m.reply '“…”'
   end
 
 }.start
