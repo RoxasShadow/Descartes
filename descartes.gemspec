@@ -22,4 +22,5 @@ Gem::Specification.new { |s|
   s.add_runtime_dependency 'crunchyroll'
   s.add_runtime_dependency 'htmlentities'
   s.add_runtime_dependency 'json'
+  s.add_runtime_dependency 'treccani'
 }
