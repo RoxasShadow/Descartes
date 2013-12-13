@@ -13,7 +13,7 @@ Gem::Specification.new { |s|
 
   s.require_paths = ['lib']
   s.files         = Dir.glob('lib/**/*')
-  s.executables = 'descartes'
+  s.executables   = 'descartes'
 
   s.add_runtime_dependency 'cinch'
   s.add_runtime_dependency 'cinch-login'

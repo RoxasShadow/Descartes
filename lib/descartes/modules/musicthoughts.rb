@@ -12,8 +12,23 @@
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 ##
 
+require 'open-uri'
+require 'nokogiri'
+
 class Descartes
-  def self.version
-    '0.3.10'
+  class MusicToughts
+    include Cinch::Plugin
+    match 'music'
+
+    def execute(m)
+      lang = { 'Cookie' => 'lang=it' } 
+      page = Nokogiri::HTML open('http://musicthoughts.com/t', lang)
+
+      quote  = page.at_xpath('//blockquote//q').text.strip
+      author = page.at_xpath('//blockquote//cite').text.strip
+
+      m.reply quote
+      m.reply "- #{author}"
+    end
   end
 end
