@@ -28,7 +28,7 @@ class Descartes
     end
 
     def get_lastfm_nicks_archive
-      file = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
+      file = File.join File.dirname(__FILE__), 'files', 'lastfm_nicks.yml'
       FileUtils.touch file unless File.exists? file
       YAML.load_file(file) || {}
     end
@@ -57,7 +57,7 @@ class Descartes
       nicks              = get_lastfm_nicks_archive
       nicks[m.user.nick] = lastfmnick
 
-      file = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
+      file = File.join File.dirname(__FILE__), 'files', 'lastfm_nicks.yml'
       File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
 
       m.reply "Ok, added user #{lastfmnick}."
@@ -68,7 +68,7 @@ class Descartes
       nicks = get_lastfm_nicks_archive
       nicks.delete lastfmnick
 
-      file  = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
+      file  = File.join File.dirname(__FILE__), 'files', 'lastfm_nicks.yml'
       File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
 
       m.reply "Ok, removed user #{lastfmnick}."
