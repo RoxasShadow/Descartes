@@ -14,82 +14,78 @@
 
 require 'rockstar'
 require 'yaml'
+require 'fileutils'
 
 class Descartes
   class LastFm
     include Cinch::Plugin
 
-    #informative 
-    match /lastsong/, method: :last_played_song
-
-    #management
-    match /lastfmuser add (\w{1,15})/, method: :adduser
-    match /lastfmuser remove (\w{1,15})/, method: :removeuser
-    match /lastfmuser show ([^\b]+)/, method: :showrelations
-
-    def authenticate()
-      Rockstar.lastfm = YAML.load_file(File.join(File.dirname(__FILE__), 'reply', 'lastfm.yml'))
+    def authenticate!
+      Rockstar.lastfm = {
+        :api_key    => 'bc15f325a6aa7dcc4e8d2df74ade7cdd',
+        :api_secret => 'c055b169a789ce6491a1b016ff6ebb21'
+      }
     end
 
-    def lastfm_nicks_archive()
-      return YAML.load_file(File.join(File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'))
+    def get_lastfm_nicks_archive
+      file = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
+      FileUtils.touch file unless File.exists? file
+      YAML.load_file(file) || {}
     end
 
+    match 'lastsong', method: :last_played_song
     def last_played_song(m)
-      usernick = m.user.nick
-      authenticate()
-      
-      lastfmnick=lastfm_nicks_archive()[usernick]
+      usernick   = m.user.nick
+      lastfmnick = get_lastfm_nicks_archive[usernick]
       m.reply "Hey #{usernick}, I don't know your Last.fm nick. add it using !lastfmuser add <lastfmnick>" unless lastfmnick
 
-      user = Rockstar::User.new(lastfmnick)
+      user  = Rockstar::User.new lastfmnick
       track = user.recent_tracks.first
 
+      album = track.album ? "in #{track.album}" : 'in no known album'
       if track.now_playing?
-        if track.album
-          m.reply "#{lastfmnick} is listening to #{track.name} by #{track.artist} (in #{track.album}) right now!"
-        else
-          m.reply "#{lastfmnick} is listening to #{track.name} by #{track.artist} (in no known album) right now!"
-        end
+        m.reply "#{lastfmnick} is listening to #{track.name} by #{track.artist} (#{album}) right now!"
       else
-        if track.album
-          m.reply "the last song #{lastfmnick} listened to is #{track.name} by #{track.artist} (in #{track.album})."
-        else
-          m.reply "the last song #{lastfmnick} listened to is #{track.name} by #{track.artist} (in no known album)."
-        end
+        m.reply "the last song #{lastfmnick} listened to is #{track.name} by #{track.artist} (#{album})."
       end
     end
 
-    def adduser(m, lastfmnick)
-      nicks = lastfm_nicks_archive()
+    match /lastfmuser add (\w{1,15})/, method: :add_user
+    def add_user(m, lastfmnick)
+      nicks              = get_lastfm_nicks_archive
       nicks[m.user.nick] = lastfmnick
-      File.open(File.join(File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'), 'w'){ |f|
-          f.write YAML.dump(nicks);
-        }
+
+      file = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
+      File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
+
       m.reply "Ok, added user #{lastfmnick}"
     end
 
-    def removeuser(m, lastfmnick)
-      nicks = lastfm_nicks_archive()
-      nicks.delete lastfmnick
-      File.open(File.join(File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'), 'w'){ |f|
-          f.write YAML.dump(nicks);
-        }
+    match 'lastfmuser remove',  method: :remove_user
+    def remove_user(m)
+      nicks = get_lastfm_nicks_archive
+      nicks.delete m.user.nick
+
+      file  = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
+      File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
+
       m.reply "Ok, removed user #{lastfmnick}"
     end
 
-    def showrelations(m, usernicks)
-      usernick_list = usernicks.split " "
-      found = false
-      #read a file N times costs more than read a file just once
-      lastfm_nicks_archive().each {|usernick, lastfmnick|
-                              found = true if usernick_list.include? usernick
-                              m.reply "#{usernick} is known as #{lastfmnick}" if usernick_list.include? usernick
-                            }
-      unless found
-        m.reply 'I don\'t know anthing, I know only what I know.'
-      end 
-    end 
-  
+    match /lastfmuser show ([^\b]+)/, method: :show_relations
+    def show_relations(m, usernicks)
+      usernick_list = usernicks.split
+      found         = false
+
+      get_lastfm_nicks_archive.each { |usernick, lastfmnick|
+        if usernick_list.include? usernick
+          found = true                                    
+          m.reply "#{usernick} is known as #{lastfmnick}"
+        end
+      }
+
+      m.reply 'I don\'t know anthing, I know only what I know.' unless found
+    end
+
   end
 end
