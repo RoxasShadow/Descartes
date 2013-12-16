@@ -35,9 +35,11 @@ class Descartes
 
     match 'lastsong', method: :last_played_song
     def last_played_song(m)
+      authenticate!
+
       usernick   = m.user.nick
       lastfmnick = get_lastfm_nicks_archive[usernick]
-      m.reply "Hey #{usernick}, I don't know your Last.fm nick. add it using !lastfmuser add <lastfmnick>" unless lastfmnick
+      m.reply "Hey #{usernick}, I don't know your Last.fm nick. add it using '!lastfmuser add <lastfmnick>'." unless lastfmnick
 
       user  = Rockstar::User.new lastfmnick
       track = user.recent_tracks.first
@@ -46,7 +48,7 @@ class Descartes
       if track.now_playing?
         m.reply "#{lastfmnick} is listening to #{track.name} by #{track.artist} (#{album}) right now!"
       else
-        m.reply "the last song #{lastfmnick} listened to is #{track.name} by #{track.artist} (#{album})."
+        m.reply "The last song #{lastfmnick} listened to is #{track.name} by #{track.artist} (#{album})."
       end
     end
 
@@ -58,18 +60,18 @@ class Descartes
       file = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
       File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
 
-      m.reply "Ok, added user #{lastfmnick}"
+      m.reply "Ok, added user #{lastfmnick}."
     end
 
-    match 'lastfmuser remove',  method: :remove_user
-    def remove_user(m)
+    match /lastfmuser remove (\w{1,15})/,  method: :remove_user
+    def remove_user(m, lastfmnick)
       nicks = get_lastfm_nicks_archive
-      nicks.delete m.user.nick
+      nicks.delete lastfmnick
 
       file  = File.join File.dirname(__FILE__), 'reply', 'lastfm_nicks.yml'
       File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
 
-      m.reply "Ok, removed user #{lastfmnick}"
+      m.reply "Ok, removed user #{lastfmnick}."
     end
 
     match /lastfmuser show ([^\b]+)/, method: :show_relations
@@ -80,7 +82,7 @@ class Descartes
       get_lastfm_nicks_archive.each { |usernick, lastfmnick|
         if usernick_list.include? usernick
           found = true                                    
-          m.reply "#{usernick} is known as #{lastfmnick}"
+          m.reply "#{usernick} is known as #{lastfmnick}."
         end
       }
 
