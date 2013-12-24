@@ -26,9 +26,9 @@ class Descartes
         page = Nokogiri::HTML(open("http#{ssl}://#{url}").read, nil, 'utf-8')
 
         if url.match('youtube.com|youtu.be') != nil
-          m.reply page.css('//title').first.text.chomp(' - YouTube')
+          m.reply Format(:pink, "[Youtube] #{page.css('//title').first.text.chomp(' - YouTube')}")
         else
-          m.reply page.css('//title').first.text.strip
+          m.reply Format(:red, "[URL] #{page.css('//title').first.text.strip}")
         end
       rescue; end
     end
