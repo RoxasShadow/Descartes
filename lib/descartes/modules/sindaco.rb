@@ -16,10 +16,10 @@ class Descartes
   class Sindaco
     include Cinch::Plugin
 
-    match /Sindaco/
+    match 'Sindaco'
 
     def execute(m)
-      file    = File.expand_path '../files/sindaco.txt', __FILE__
+      file = File.expand_path '../files/sindaco.txt', __FILE__
       m.reply [].tap { |ary|
         File.read(file).each_line { |line| ary << line unless line.strip.empty? }
       }.sample

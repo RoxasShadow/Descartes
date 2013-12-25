@@ -22,11 +22,11 @@ class Descartes
     match /google (.+)/
 
     def search(query)
-      page = Nokogiri::HTML(open("http://www.google.com/search?q=#{CGI.escape(query)}"))
+      page = Nokogiri::HTML open("http://www.google.com/search?q=#{CGI.escape(query)}")
 
       [].tap { |res|
         page.search('cite').each { |r|
-          res << { :url => r.inner_text }
+          res << { url: r.inner_text }
         }
 
         page.xpath('//h3[@class="r"]').each_with_index { |r, i|

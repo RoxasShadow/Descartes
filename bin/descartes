@@ -33,8 +33,33 @@ Cinch::Bot.new {
     c.plugins.options[Cinch::Plugins::Login] = { :password => 'dat_password' }
   end
 
-  on :message, '!list' do |m|
-    m.reply m.bot.plugins.join ', '
+  on :message, '!help' do |m|
+    m.bot.plugins.each { |plugin|
+      plugin.handlers.each { |handler|
+        pattern = handler.pattern
+        name    = plugin.to_s.split('::')[1].split(?:)[0]
+
+        prefix = case pattern.prefix
+          when Regexp then pattern.prefix.source
+          when String then pattern.prefix
+          else            ''
+        end
+
+        suffix = case pattern.suffix
+          when Regexp then pattern.suffix.source
+          when String then pattern.suffix
+          else             ''
+        end
+
+        regex = case pattern.pattern
+          when Regexp then pattern.pattern.source
+          when String then pattern.pattern
+          else             ''
+        end
+
+        m.reply regex.empty? ? name : "#{name}: #{prefix}#{regex}#{suffix}"
+      }
+    }
   end
 
   on :message, '!è' do |m|

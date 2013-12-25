@@ -22,8 +22,8 @@ class Descartes
 		match /([a-zA-Z]+) ([a-zA-Z]+)/, :use_prefix => false
 
 		def execute(m, action, word)
-			url = "http://www.wordreference.com/#{action}/#{word}"
-			page = Nokogiri::HTML(open(url))
+			url  = "http://www.wordreference.com/#{action}/#{word}"
+			page = Nokogiri::HTML open(url)
 			m.reply "#{page.xpath('//table[@class="WRD"]/tr[2]').text}  di più qui: #{url}"
 		end
 	end

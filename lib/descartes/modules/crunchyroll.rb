@@ -24,11 +24,11 @@ class Descartes
       series = Crunchyroll::find m.params[1].split('.cr ')[1]
       
       if series
-        # m.reply "#{Format(:red, series[:title])} is a series airing on #{Format(:red, series[:where])} at #{Format(:red, series[:day])} #{Format(:red, series[:hour])}:#{Format(:red, series[:min])} which is in #{Format(:red, series[:left])}."
-        m.reply "#{Format(:red, series[:title])} è una serie trasmessa da #{Format(:red, series[:where])} il #{Format(:red, series[:day].to_ita)} alle #{Format(:red, series[:hour])}:#{Format(:red, series[:min])}, cioè tra #{Format(:red, series[:left].to_ita)}."
+        # m.reply "#{series[:title].colorize} is a series airing on #{series[:where].colorize} at #{series[:day].colorize} #{series[:hour].colorize}:#{series[:min].colorize} which is in #{series[:left].colorize}."
+        m.reply "#{series[:title].colorize} è una serie trasmessa da #{series[:where].colorize} il #{series[:day].to_ita.colorize} alle #{series[:hour].colorize}:#{series[:min].colorize}, cioè tra #{series[:left].to_ita.colorize}."
       else
-        # m.reply Format(:red, 'Anime not found')
-        m.reply Format(:red, 'Anime non trovato')
+        # m.reply 'Anime not found'.colorize
+        m.reply 'Anime non trovato'.colorize
       end
     end
   end
