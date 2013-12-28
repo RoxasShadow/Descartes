@@ -21,8 +21,8 @@ class Descartes
 
     def execute(m, keyword, n_ep)
       host     = get_host 'pigro.txt'
-      series   = Assonnato::Show.new(host, :json).search! keyword
-      episodes = Assonnato::Episode.new host, :json
+      series   = Assonnato::Show.new(host).search! keyword
+      episodes = Assonnato::Episode.new host
 
       if series.empty?
         m.reply 'Series not found'
