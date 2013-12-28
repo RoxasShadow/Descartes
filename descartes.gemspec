@@ -25,4 +25,5 @@ Gem::Specification.new { |s|
   s.add_runtime_dependency 'json'
   s.add_runtime_dependency 'treccani'
   s.add_runtime_dependency 'rockstar'
+  s.add_runtime_dependency 'assonnato'
 }

@@ -19,7 +19,7 @@ class Descartes
 	class Dicteng
 		include Cinch::Plugin
 
-		match /([a-zA-Z]+) ([a-zA-Z]+)/, :use_prefix => false
+		match /!dict ([a-zA-Z]+) ([a-zA-Z]+)/, :use_prefix => false
 
 		def execute(m, action, word)
 			url  = "http://www.wordreference.com/#{action}/#{word}"

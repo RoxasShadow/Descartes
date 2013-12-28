@@ -21,10 +21,8 @@ class Descartes
     include Cinch::Plugin
 
     def authenticate!
-      Rockstar.lastfm = {
-        :api_key    => 'bc15f325a6aa7dcc4e8d2df74ade7cdd',
-        :api_secret => 'c055b169a789ce6491a1b016ff6ebb21'
-      }
+      file = File.join File.dirname(__FILE__), 'files', 'lastfm_api.yml'
+      Rockstar.lastfm = YAML.load_file file
     end
 
     def get_lastfm_nicks_archive

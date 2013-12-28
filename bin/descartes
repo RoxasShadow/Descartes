@@ -74,4 +74,8 @@ Cinch::Bot.new {
     m.reply '“…”'
   end
 
+  on :message, '!version' do |m|
+    m.reply Descartes.version
+  end
+
 }.start
