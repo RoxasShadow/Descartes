@@ -21,12 +21,12 @@ class Descartes
     include Cinch::Plugin
 
     def authenticate!
-      file = File.join File.dirname(__FILE__), 'files', 'lastfm_api.yml'
+      file = File.join $options[:dotfiles], 'lastfm_api.yml'
       Rockstar.lastfm = YAML.load_file file
     end
 
     def get_lastfm_nicks_archive
-      file = File.join File.dirname(__FILE__), 'files', 'lastfm_nicks.yml'
+      file = File.join $options[:dotfiles], 'lastfm_nicks.yml'
       FileUtils.touch file unless File.exists? file
       YAML.load_file(file) || {}
     end
@@ -37,16 +37,16 @@ class Descartes
 
       usernick   = m.user.nick
       lastfmnick = get_lastfm_nicks_archive[usernick]
-      m.reply "Hey #{usernick}, I don't know your Last.fm nick. add it using '!lastfmuser add <lastfmnick>'." unless lastfmnick
+      m.reply "Hey #{usernick.colorize}, I don't know your Last.fm nick. add it using '!lastfmuser add <lastfmnick>'." unless lastfmnick
 
       user  = Rockstar::User.new lastfmnick
       track = user.recent_tracks.first
 
-      album = track.album.empty? ? "in #{track.album}" : 'in no known album'
+      album = track.album.empty? ? 'in no known album' : "in #{track.album.colorize}"
       if track.now_playing?
-        m.reply "#{lastfmnick} is listening to #{track.name} by #{track.artist} (#{album}) right now!"
+        m.reply "#{lastfmnick.colorize} is listening to #{track.name.colorize} by #{track.artist.colorize} (#{album}) right now!"
       else
-        m.reply "The last song #{lastfmnick} listened to is #{track.name} by #{track.artist} (#{album})."
+        m.reply "The last song #{lastfmnick.colorize} listened to is #{track.name.colorize} by #{track.artist.colorize} (#{album})."
       end
     end
 
@@ -55,7 +55,7 @@ class Descartes
       nicks              = get_lastfm_nicks_archive
       nicks[m.user.nick] = lastfmnick
 
-      file = File.join File.dirname(__FILE__), 'files', 'lastfm_nicks.yml'
+      file = File.join $options[:dotfiles], 'lastfm_nicks.yml'
       File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
 
       m.reply "Ok, added user #{lastfmnick}."
@@ -66,7 +66,7 @@ class Descartes
       nicks = get_lastfm_nicks_archive
       nicks.delete lastfmnick
 
-      file  = File.join File.dirname(__FILE__), 'files', 'lastfm_nicks.yml'
+      file  = File.join $options[:dotfiles], 'lastfm_nicks.yml'
       File.open(file, ?w) { |f| f.write YAML.dump(nicks) }
 
       m.reply "Ok, removed user #{lastfmnick}."

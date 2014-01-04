@@ -15,22 +15,54 @@
 ##
 
 require 'descartes'
+require 'optparse'
+require 'fileutils'
 
-nickname  = ARGV[0]     || 'Descartes'
-server    = ARGV[1]     || 'irc.rizon.net'
-channels  = ARGV[2..-1] || ['#aggvistnurummor']
-plugins   = Descartes.load
+options = {
+  :nickname => 'Descartes',
+  :server   => 'irc.rizon.net',
+  :channels => ['#aggvistnurummor'],
+  :dotfiles => File.join(ENV['HOME'], '.descartes'),
+  :password => 'dat_password'
+}
+
+OptionParser.new { |o|
+  o.on '-n', '--nickname NICKNAME', 'bot\'s nickname' do |nickname|
+    options[:nickname] = nickname
+  end
+
+  o.on '-s', '--server SERVER', 'target IRC server' do |server|
+    options[:server] = server
+  end
+
+  o.on '-c', '--channel #chan1,#chan2,#chan3', 'target channels' do |channels|
+    options[:channels] = channels.split(?,).map { |s| s.strip }
+  end
+
+  o.on '-d', '--dotfiles PATH', 'folder where store config files' do |dotfiles|
+    options[:dotfiles] = dotfiles
+  end
+
+  o.on '-p', '--password password', 'target channel\'s password' do |password|
+    options[:password] = password
+  end
+}.parse!
+
+unless File.directory? options[:dotfiles]
+  files = File.join File.dirname(__FILE__), '../lib/descartes/modules/files'
+  FileUtils.cp_r files, options[:dotfiles]
+end
 
 Cinch::Bot.new {
   configure do |c|
-    c.nick     = nickname
+    c.nick     = options[:nickname]
     c.realname = 'Descartes'
     c.user     = 'Descartes'
-    c.server   = server
-    c.channels = channels
+    c.server   = options[:server]
+    c.channels = options[:channels]
     
-    c.plugins.plugins  = [Cinch::Plugins::Login] + plugins
-    c.plugins.options[Cinch::Plugins::Login] = { :password => 'dat_password' }
+    c.plugins.plugins  = [Cinch::Plugins::Login] + Descartes.load(options)
+    c.plugins.options[Cinch::Plugins::Login] = { :password => options[:password] }
   end
 
   on :message, '!help' do |m|
@@ -77,5 +109,4 @@ Cinch::Bot.new {
   on :message, '!version' do |m|
     m.reply Descartes.version
   end
-
 }.start

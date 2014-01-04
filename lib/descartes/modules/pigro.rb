@@ -17,12 +17,18 @@ require 'assonnato'
 class Descartes
   class Pigro
     include Cinch::Plugin
-    match /dat_show (.+) (.+)/
+    match /show (.+)/
 
-    def execute(m, keyword, n_ep)
+    def execute(m, keyword)
+      s       = keyword.split
+      n_ep    = s.last.numeric? ? s.pop : nil
+      keyword = s.join
+
       host     = get_host 'pigro.txt'
-      series   = Assonnato::Show.new(host).search! keyword
+      shows    = Assonnato::Show.new    host
       episodes = Assonnato::Episode.new host
+
+      series = shows.search! keyword
 
       if series.empty?
         m.reply 'Series not found'
@@ -30,44 +36,54 @@ class Descartes
       end
 
       series.each { |s|
-        m.reply "#{s.name.colorize} (#{s.status} series of #{s.tot_episodes} episodes airing #{s.airing})"
-        m.reply ''.tap { |staff|
-          {
-            :Translator => s.translator,
-            :Editor     => s.editor,
-            :Checker    => s.checker,
-            :Timer      => s.timer,
-            :Typesetter => s.typesetter,
-            :Encoder    => s.encoder,
-            :QC         => s.qchecker
-          }.each_pair { |key, val|
-            staff << "#{key.to_s.colorize}: #{val} / " unless val.empty?
-          }
-        }[0..-4]
+        show = shows.get!(s.name).first
 
-        eps = episodes.get! s.name, n_ep.to_i
-        eps.each { |ep|
-          m.reply "Episode #{ep.episode} - ".colorize.tap { |staff|
+        if n_ep.nil?
+          m.reply "#{show.name.colorize} (#{show.status} series of #{show.tot_episodes} episodes airing #{show.airing})"
+          m.reply ''.tap { |staff|
             {
-              :Translation => ep.translation,
-              :Editing     => ep.editing,
-              :Check       => ep.checking,
-              :Timing      => ep.timing,
-              :Typesetting => ep.typesetting,
-              :Encoding    => ep.encoding,
-              :QC          => ep.qchecking
+              :Translator => show.translator,
+              :Editor     => show.editor,
+              :Checker    => show.checker,
+              :Timer      => show.timer,
+              :Typesetter => show.typesetter,
+              :Encoder    => show.encoder,
+              :QC         => show.qchecker
             }.each_pair { |key, val|
-              staff << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
+              staff << "#{key.to_s.colorize}: #{val} / " unless val.empty?
             }
-            staff << 'Download'.colorize + ": #{ep.download}" if ep.download
           }[0..-4]
-        }
+        else
+          eps = episodes.get! show.name, n_ep.to_i
+          eps.each { |ep|
+            m.reply "Episode #{ep.episode} - ".colorize.tap { |staff|
+              {
+                :Translation => ep.translation,
+                :Editing     => ep.editing,
+                :Check       => ep.checking,
+                :Timing      => ep.timing,
+                :Typesetting => ep.typesetting,
+                :Encoding    => ep.encoding,
+                :QC          => ep.qchecking
+              }.each_pair { |key, val|
+                staff << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
+              }
+              staff << 'Download'.colorize + ": #{ep.download}" unless ep.download.strip.empty?
+            }[0..-4]
+          }
+        end
       }
     end
 
     def get_host(f)
-      file = File.join File.dirname(__FILE__), 'files', f
-      File.exists?(file) ? File.read(file) : 'http://localhost'
+      file = File.join $options[:dotfiles], f
+
+      if File.exists? file
+        url = File.read(file).strip
+        return url unless url.empty?
+      end       
+      
+      'http://pigro.omnivium.it:4567'
     end
   end
 end

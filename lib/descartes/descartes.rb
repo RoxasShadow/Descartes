@@ -13,7 +13,9 @@
 ##
 
 class Descartes
-  def self.load
+  def self.load(options)
+    $options = options
+
     Dir.glob(File.expand_path('../modules/*.rb', __FILE__)).each { |plugin|
       require plugin
     }
