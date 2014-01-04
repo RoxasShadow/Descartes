@@ -40,7 +40,7 @@ class Descartes
 
         if n_ep.nil?
           a = show.status.downcase.start_with?(?o) ?  'an' : ?a
-          m.reply "[#{show.fansub}] #{show.name.colorize} is #{a} #{show.status} series of #{show.tot_episodes} episodes."
+          m.reply "[#{show.fansub.colorize}] #{show.name.colorize} is #{a} #{show.status} series of #{show.tot_episodes.colorize} episodes."
           m.reply ''.tap { |staff|
             {
               :Translator => show.translator,
@@ -58,7 +58,7 @@ class Descartes
           eps = episodes.get! show.name, n_ep.to_i
           eps.each { |ep|
             m.reply "Episode #{ep.episode} - ".colorize.tap { |staff|
-              {
+              activities = {
                 :Translation => ep.translation,
                 :Editing     => ep.editing,
                 :Check       => ep.checking,
@@ -66,9 +66,11 @@ class Descartes
                 :Typesetting => ep.typesetting,
                 :Encoding    => ep.encoding,
                 :QC          => ep.qchecking
-              }.each_pair { |key, val|
-                staff << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
               }
+
+              activities.each_pair { |key, val|
+                staff << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
+              } if activities.select { |k, v| !v }.any?
               staff << 'Download'.colorize + ": #{ep.download}" unless ep.download.strip.empty?
             }[0..-4]
           }
