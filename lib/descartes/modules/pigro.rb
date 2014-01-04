@@ -57,7 +57,7 @@ class Descartes
         else
           eps = episodes.get! show.name, n_ep.to_i
           eps.each { |ep|
-            m.reply "Episode #{ep.episode} - ".colorize.tap { |staff|
+            m.reply ("Episode #{ep.episode}".colorize + ' - ').tap { |staff|
               activities = {
                 :Translation => ep.translation,
                 :Editing     => ep.editing,
@@ -68,11 +68,15 @@ class Descartes
                 :QC          => ep.qchecking
               }
 
-              activities.each_pair { |key, val|
-                staff << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
-              } if activities.select { |k, v| !v }.any?
-              staff << 'Download'.colorize + ": #{ep.download}" unless ep.download.strip.empty?
-            }[0..-4]
+              if activities.select { |k, v| !v }.any?
+                staff << ''.tap { |s|
+                  activities.each_pair { |key, val|
+                    s << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
+                  }
+                }[0..-4]
+              end
+              staff << "#{'Download'.colorize}: #{ep.download}" unless ep.download.strip.empty?
+            }
           }
         end
       }
