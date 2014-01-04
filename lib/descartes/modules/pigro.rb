@@ -39,7 +39,7 @@ class Descartes
         show = shows.get!(s.name).first
 
         if n_ep.nil?
-          m.reply "#{show.name.colorize} (#{show.status} series of #{show.tot_episodes} episodes airing #{show.airing})"
+          m.reply "[#{show.fansub}] #{show.name.colorize} (#{show.status} series of #{show.tot_episodes} episodes airing #{show.airing})"
           m.reply ''.tap { |staff|
             {
               :Translator => show.translator,
