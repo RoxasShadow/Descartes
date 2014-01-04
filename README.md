@@ -5,4 +5,6 @@ A very serious modular ruby bot for IRC.
 
 `gem install descartes`
 
-`descartes ReneDescartes irc.foo.bar #chan #anotherchan`
+`descartes -h`
+
+`descartes -n Descartes -s irc.foo.bar -c "#fagets" -p dat_password`
