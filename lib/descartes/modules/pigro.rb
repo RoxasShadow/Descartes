@@ -73,7 +73,7 @@ class Descartes
                   activities.each_pair { |key, val|
                     s << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
                   }
-                }[0..-4]
+                }[0..-3]
               end
               staff << "#{'Download'.colorize}: #{ep.download}" unless ep.download.strip.empty?
             }
