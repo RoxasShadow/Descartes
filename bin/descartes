@@ -23,7 +23,8 @@ options = {
   :server   => 'irc.rizon.net',
   :channels => ['#aggvistnurummor'],
   :dotfiles => File.join(ENV['HOME'], '.descartes'),
-  :password => 'dat_password'
+  :password => 'dat_password',
+  :exclude  => []
 }
 
 OptionParser.new { |o|
@@ -35,7 +36,7 @@ OptionParser.new { |o|
     options[:server] = server
   end
 
-  o.on '-c', '--channel #chan1,#chan2,#chan3', 'target channels' do |channels|
+  o.on '-c', '--channel #chan1,#chan2', 'target channels' do |channels|
     options[:channels] = channels.split(?,).map { |s| s.strip }
   end
 
@@ -43,8 +44,12 @@ OptionParser.new { |o|
     options[:dotfiles] = dotfiles
   end
 
-  o.on '-p', '--password password', 'target channel\'s password' do |password|
+  o.on '-p', '--password PASSWORD', 'target channel\'s password' do |password|
     options[:password] = password
+  end
+
+  o.on '-e', '--exclude module1,module2', 'exclude modules' do |exclude|
+    options[:exclude] = exclude.split(?,).map { |s| s.strip.downcase }
   end
 }.parse!
 

@@ -17,7 +17,8 @@ class Descartes
     $options = options
 
     Dir.glob(File.expand_path('../modules/*.rb', __FILE__)).each { |plugin|
-      require plugin
+      name = plugin.split(?/).last.split(?.).first.downcase
+      require plugin unless $options[:exclude].include? name
     }
 
     return Descartes.constants.map { |p|
