@@ -15,7 +15,7 @@
 class Descartes
   class Shinbo
     include Cinch::Plugin
-    match /shinbo/, :use_prefix => false
+    match /shinbo/i, use_prefix: false
 
     def execute(m)
       Target(m.channel).action 'headtilts'

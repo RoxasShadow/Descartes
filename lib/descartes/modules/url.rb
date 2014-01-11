@@ -19,7 +19,7 @@ require 'nokogiri'
 class Descartes
   class Url
     include Cinch::Plugin
-    match /http(s)?:\/\/(\S+)/, :use_prefix => false
+    match /http(s)?:\/\/(\S+)/, use_prefix: false
 
     def execute(m, ssl, url)
       begin

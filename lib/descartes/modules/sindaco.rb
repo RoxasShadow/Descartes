@@ -16,7 +16,7 @@ class Descartes
   class Sindaco
     include Cinch::Plugin
 
-    match 'Sindaco'
+    match /Sindaco/i
 
     def execute(m)
       file = File.join $options[:dotfiles], 'sindaco.txt'
