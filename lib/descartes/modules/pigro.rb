@@ -18,6 +18,44 @@ class Descartes
   class Pigro
     include Cinch::Plugin
     match /show (.+)/
+    match /staff (.+)/, method: :by_staff
+
+    def by_staff(m, user)
+      user = user.split(' ')
+      role = user.last.to_sym.downcase
+      if [ :translator, :editor, :checker, :timer, :typesetter, :encoder, :qchecker ].include? role
+        user.pop
+        options = { user: user.join(' '), role: role }
+      else
+        options = { user: user.join(' ')             }
+      end
+
+      host  = get_host 'pigro.txt'
+      shows = Assonnato::Show.new host
+
+      series = shows.all!(:ongoing, options) + shows.all!(:dropped, options) + shows.all!(:finished, options)
+
+      if series.empty?
+        if options.has_key? :role
+          m.reply "#{options[:user].colorize} hasn't worked to any series as #{options[:role].colorize}."
+        else
+          m.reply "#{options[:user].colorize} hasn't worked to any series."
+        end
+        return
+      end
+
+      m.reply ''.tap { |str|
+        if options.has_key? :role
+          str << "#{options[:user].colorize} has worked as #{options[:role].colorize} at "
+        else
+          str << "#{options[:user].colorize} has worked a at "
+        end
+
+        series.each { |s|
+          str << "#{s.name.colorize}, "
+        }
+      }[0..-3]
+    end
 
     def execute(m, keyword)
       s       = keyword.split

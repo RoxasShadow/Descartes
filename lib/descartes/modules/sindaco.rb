@@ -15,7 +15,6 @@
 class Descartes
   class Sindaco
     include Cinch::Plugin
-
     match /Sindaco/i
 
     def execute(m)
