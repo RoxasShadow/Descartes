@@ -48,7 +48,7 @@ class Descartes
         if options.has_key? :role
           str << "#{options[:user].colorize} has worked as #{options[:role].colorize} at "
         else
-          str << "#{options[:user].colorize} has worked a at "
+          str << "#{options[:user].colorize} has worked at "
         end
 
         series.each { |s|
