@@ -46,9 +46,9 @@ class Descartes
 
       m.reply ''.tap { |str|
         if options.has_key? :role
-          str << "#{options[:user].colorize} has worked as #{options[:role].colorize} at "
+          str << "#{options[:user].colorize} has worked as #{options[:role].colorize} on "
         else
-          str << "#{options[:user].colorize} has worked at "
+          str << "#{options[:user].colorize} has worked on "
         end
 
         series.each { |s|
