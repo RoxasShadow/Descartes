@@ -23,6 +23,7 @@ class Descartes
     def by_staff(m, user)
       user = user.split(' ')
       role = user.last.to_sym.downcase
+
       if [ :translator, :editor, :checker, :timer, :typesetter, :encoder, :qchecker ].include? role
         user.pop
         options = { user: user.join(' '), role: role }
@@ -46,7 +47,7 @@ class Descartes
 
       m.reply ''.tap { |str|
         if options.has_key? :role
-          str << "#{options[:user].colorize} has worked as #{options[:role].colorize} on "
+          str << "#{series.first.send(options[:role]).colorize} has worked as #{options[:role].colorize} on "
         else
           str << "#{options[:user].colorize} has worked on "
         end
@@ -73,7 +74,7 @@ class Descartes
         return
       end
 
-      series.each { |s|
+      series.take(5).each { |s|
         show = shows.get!(s.name).first
 
         if n_ep.nil?
@@ -93,8 +94,7 @@ class Descartes
             }
           }[0..-4]
         else
-          eps = episodes.get! show.name, n_ep.to_i
-          eps.each { |ep|
+          episodes.get!(show.name, n_ep.to_i).each { |ep|
             m.reply ("Episode #{ep.episode}".colorize + ' - ').tap { |staff|
               activities = {
                 :Translation => ep.translation,
