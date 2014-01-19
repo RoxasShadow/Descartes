@@ -59,9 +59,9 @@ class Descartes
     end
 
     def execute(m, keyword)
-      s       = keyword.split
+      s       = keyword.split ' '
       n_ep    = s.last.numeric? ? s.pop : nil
-      keyword = s.join
+      keyword = s.join ' '
 
       host     = get_host 'pigro.txt'
       shows    = Assonnato::Show.new    host
@@ -94,28 +94,38 @@ class Descartes
             }
           }[0..-4]
         else
-          episodes.get!(show.name, n_ep.to_i).each { |ep|
-            m.reply ("Episode #{ep.episode}".colorize + ' - ').tap { |staff|
-              activities = {
-                :Translation => ep.translation,
-                :Editing     => ep.editing,
-                :Check       => ep.checking,
-                :Timing      => ep.timing,
-                :Typesetting => ep.typesetting,
-                :Encoding    => ep.encoding,
-                :QC          => ep.qchecking
-              }
+          episodes = episodes.get! show.name, n_ep.to_i
 
-              if activities.select { |k, v| !v }.any?
-                staff << ''.tap { |s|
-                  activities.each_pair { |key, val|
-                    s << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
-                  }
-                }[0..-3]
-              end
-              staff << "#{'Download'.colorize}: #{ep.download}" unless ep.download.strip.empty?
+          if episodes.any?
+            episodes.each { |ep|
+              m.reply ("#{show.name.colorize} ##{ep.episode}".colorize + ' - ').tap { |staff|
+                activities = {
+                  :Translation => ep.translation,
+                  :Editing     => ep.editing,
+                  :Check       => ep.checking,
+                  :Timing      => ep.timing,
+                  :Typesetting => ep.typesetting,
+                  :Encoding    => ep.encoding,
+                  :QC          => ep.qchecking
+                }
+
+                if activities.select { |k, v| !v }.any?
+                  staff << ''.tap { |s|
+                    activities.each_pair { |key, val|
+                      s << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
+                    }
+                  }[0..-3]
+                else
+                  staff << 'Already released. '
+                end
+                staff << "#{'Download'.colorize}: #{ep.download}" unless ep.download.strip.empty?
+              }
             }
-          }
+          elsif n_ep.to_i > show.tot_episodes
+            m.reply "#{m.user.nick.colorize} pls go and http://just-believe.in."
+          else
+            m.reply "The episode #{n_ep.colorize} has not been added yet to #{show.name.colorize}."
+          end
         end
       }
     end
@@ -128,7 +138,7 @@ class Descartes
         return url unless url.empty?
       end       
       
-      'http://pigro.omnivium.it:4567'
+      'http://pigro.omnivium.it'
     end
   end
 end
