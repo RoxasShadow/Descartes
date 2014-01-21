@@ -29,7 +29,7 @@ class Descartes
     end
 
     def execute(m, num = nil)
-      m.reply get(num ? "http://www.quotone.unsigned.it/api/get/#{num.to_i}.json" : 'http://www.quotone.unsigned.it/api/random.json')
+      m.reply get(num ? "http://quotone.giovannicapuano.net/api/get/#{num.to_i}.json" : 'http://quotone.giovannicapuano.net/api/random.json')
     end
   end
 end
