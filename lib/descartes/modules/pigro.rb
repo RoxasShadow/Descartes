@@ -109,10 +109,10 @@ class Descartes
                   :QC          => ep.qchecking
                 }
 
-                if activities.select { |k, v| !v }.any?
+                if activities.select { |k, v| v != :done }.any?
                   staff << ''.tap { |s|
                     activities.each_pair { |key, val|
-                      s << "#{key.to_s.colorize}: #{val ? 'gg' : 'nope'} / "
+                      s << "#{key.to_s.colorize}: #{val} / "
                     }
                   }[0..-3]
                 else
