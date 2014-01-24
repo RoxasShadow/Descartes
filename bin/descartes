@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# encoding: UTF-8
 ##
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #                    Version 2, December 2004
@@ -53,10 +52,19 @@ OptionParser.new { |o|
   end
 }.parse!
 
-unless File.directory? options[:dotfiles]
-  files = File.join File.dirname(__FILE__), '../lib/descartes/modules/files'
-  FileUtils.cp_r files, options[:dotfiles]
-end
+files = File.join File.dirname(__FILE__), '../lib/descartes/modules/files'
+FileUtils.cp_r(files, options[:dotfiles]) unless File.directory? options[:dotfiles]
+
+Dir["#{options[:dotfiles]}/**/*"].each { |file|
+  lib = Dir["#{files}/**/*"].select { |f| File.basename(f) == File.basename(file) }
+  next if     lib.empty?
+  next unless lib.first.end_with? '.txt'
+
+  if File.read(lib.first) != File.read(file)
+    FileUtils.cp lib.first, options[:dotfiles]
+    puts "'#{file}' has been updated."
+  end
+}
 
 Cinch::Bot.new {
   configure do |c|
