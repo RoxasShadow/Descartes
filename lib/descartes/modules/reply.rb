@@ -16,7 +16,8 @@ class Descartes
   class Reply
     include Cinch::Plugin
     
-    match /.*\?/, :prefix => lambda { |m| m.bot.nick }
+    set :prefix, lambda { |m| Regexp.new "(.*)#{m.bot.nick}(.*)" }
+    match ??
 
     def execute(m)
       file = File.join $options[:dotfiles], 'replies.txt'
