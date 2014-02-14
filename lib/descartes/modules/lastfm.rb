@@ -42,11 +42,11 @@ class Descartes
       user  = Rockstar::User.new lastfmnick
       track = user.recent_tracks.first
 
-      album = track.album.empty? ? 'in no known album' : "in #{track.album.colorize}"
+      album = track.album.empty? ? '' : " (in #{track.album.colorize})"
       if track.now_playing?
-        m.reply "#{lastfmnick.colorize} is listening to #{track.name.colorize} by #{track.artist.colorize} (#{album}) right now!"
+        m.reply "#{lastfmnick.colorize} is listening to #{track.name.decode.colorize} by #{track.artist.decode.colorize}#{album} right now!"
       else
-        m.reply "The last song #{lastfmnick.colorize} listened to is #{track.name.colorize} by #{track.artist.colorize} (#{album})."
+        m.reply "The last song #{lastfmnick.colorize} listened to is #{track.name.decode.colorize} by #{track.artist.decode.colorize}#{album}."
       end
     end
 
