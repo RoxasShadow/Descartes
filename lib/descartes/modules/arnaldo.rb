@@ -11,9 +11,15 @@
 # 
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 ##
+require 'arnaldo'
 
 class Descartes
-  def self.version
-    '0.7.5'
+  class Arnaldo
+    include Cinch::Plugin
+    match 'proverb'
+
+    def execute(m)
+      m.reply "“#{::Arnaldo.get}”".colorize
+    end
   end
 end
