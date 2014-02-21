@@ -17,18 +17,17 @@ require 'assonnato'
 class Descartes
   class Pigro
     include Cinch::Plugin
-    match /show (.+)/
-    match /staff (.+)/, method: :by_staff
 
+    match /staff (.+)/, method: :by_staff
     def by_staff(m, user)
-      user = user.split(' ')
+      user = user.split
       role = user.last.to_sym.downcase
 
       if [ :translator, :editor, :checker, :timer, :typesetter, :encoder, :qchecker ].include? role
         user.pop
-        options = { user: user.join(' '), role: role }
+        options = { user: user.join, role: role }
       else
-        options = { user: user.join(' ')             }
+        options = { user: user.join             }
       end
 
       host  = get_host 'pigro.txt'
@@ -58,10 +57,11 @@ class Descartes
       }[0..-3]
     end
 
-    def execute(m, keyword)
-      s       = keyword.split ' '
-      n_ep    = s.last.numeric? ? s.pop : nil
-      keyword = s.join ' '
+    match /show (.+)/,  method: :by_show
+    def by_show(m, keyword)
+      s       = keyword.split
+      n_ep    = (s.last == 'last' || s.last.numeric?) ? s.pop : nil
+      keyword = s.join
 
       host     = get_host 'pigro.txt'
       shows    = Assonnato::Show.new    host
@@ -70,43 +70,40 @@ class Descartes
       series = shows.search! keyword
 
       if series.empty?
-        m.reply 'Series not found'
-        return
-      end
+        m.reply 'Series not found.'
+      else
+        series.take(5).each { |s|
+          show = shows.get!(s.name).first
 
-      series.take(5).each { |s|
-        show = shows.get!(s.name).first
+          if n_ep.nil?
+            a = show.status.downcase.start_with?(?o) ?  'an' : ?a
+            m.reply "[#{show.fansub.colorize}] #{show.name.colorize} is #{a} #{show.status} series of #{show.tot_episodes.colorize} episodes."
+            m.reply ''.tap { |staff|
+              {
+                :Translator => show.translator,
+                :Editor     => show.editor,
+                :Checker    => show.checker,
+                :Timer      => show.timer,
+                :Typesetter => show.typesetter,
+                :Encoder    => show.encoder,
+                :QC         => show.qchecker
+              }.each_pair { |key, val|
+                staff << "#{key.to_s.colorize}: #{val} / " unless val.empty?
+              }
+            }[0..-4]
+          elsif n_ep == 'last'
+            episode = episodes.last!(:ongoing).select { |ep| ep.show_name == s.name }.last
 
-        if n_ep.nil?
-          a = show.status.downcase.start_with?(?o) ?  'an' : ?a
-          m.reply "[#{show.fansub.colorize}] #{show.name.colorize} is #{a} #{show.status} series of #{show.tot_episodes.colorize} episodes."
-          m.reply ''.tap { |staff|
-            {
-              :Translator => show.translator,
-              :Editor     => show.editor,
-              :Checker    => show.checker,
-              :Timer      => show.timer,
-              :Typesetter => show.typesetter,
-              :Encoder    => show.encoder,
-              :QC         => show.qchecker
-            }.each_pair { |key, val|
-              staff << "#{key.to_s.colorize}: #{val} / " unless val.empty?
-            }
-          }[0..-4]
-        else
-          episodes = episodes.get! show.name, n_ep.to_i
-
-          if episodes.any?
-            episodes.each { |ep|
-              m.reply ("#{show.name.colorize} ##{ep.episode}".colorize + ' - ').tap { |staff|
+            if episode
+              m.reply ("#{show.name.colorize} ##{episode.episode}".colorize + ' - ').tap { |staff|
                 activities = {
-                  :Translation => ep.translation,
-                  :Editing     => ep.editing,
-                  :Check       => ep.checking,
-                  :Timing      => ep.timing,
-                  :Typesetting => ep.typesetting,
-                  :Encoding    => ep.encoding,
-                  :QC          => ep.qchecking
+                  :Translation => episode.translation,
+                  :Editing     => episode.editing,
+                  :Check       => episode.checking,
+                  :Timing      => episode.timing,
+                  :Typesetting => episode.typesetting,
+                  :Encoding    => episode.encoding,
+                  :QC          => episode.qchecking
                 }
 
                 if activities.select { |k, v| v != :done }.any?
@@ -118,16 +115,47 @@ class Descartes
                 else
                   staff << 'Already released. '
                 end
-                staff << "#{'Download'.colorize}: #{ep.download}" unless ep.download.strip.empty?
+                staff << "#{'Download'.colorize}: #{episode.download}" unless episode.download.strip.empty?
               }
-            }
-          elsif n_ep.to_i > show.tot_episodes
-            m.reply "#{m.user.nick.colorize} pls go and http://just-believe.in."
+            else
+              m.reply "#{show.name.colorize} has no episodes yet."
+            end
           else
-            m.reply "The episode #{n_ep.colorize} has not been added yet to #{show.name.colorize}."
+            episodes = episodes.get! show.name, n_ep.to_i
+
+            if episodes.any?
+              episodes.each { |ep|
+                m.reply ("#{show.name.colorize} ##{ep.episode}".colorize + ' - ').tap { |staff|
+                  activities = {
+                    :Translation => ep.translation,
+                    :Editing     => ep.editing,
+                    :Check       => ep.checking,
+                    :Timing      => ep.timing,
+                    :Typesetting => ep.typesetting,
+                    :Encoding    => ep.encoding,
+                    :QC          => ep.qchecking
+                  }
+
+                  if activities.select { |k, v| v != :done }.any?
+                    staff << ''.tap { |s|
+                      activities.each_pair { |key, val|
+                        s << "#{key.to_s.colorize}: #{val} / "
+                      }
+                    }[0..-3]
+                  else
+                    staff << 'Already released. '
+                  end
+                  staff << "#{'Download'.colorize}: #{ep.download}" unless ep.download.strip.empty?
+                }
+              }
+            elsif n_ep.to_i > show.tot_episodes
+              m.reply "#{m.user.nick.colorize} pls go and http://just-believe.in."
+            else
+              m.reply "The episode #{n_ep.colorize} has not been added yet to #{show.name.colorize}."
+            end
           end
-        end
-      }
+        }
+      end
     end
 
     def get_host(f)
