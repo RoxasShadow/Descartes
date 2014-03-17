@@ -56,14 +56,19 @@ files = File.join File.dirname(__FILE__), '../lib/descartes/modules/files'
 FileUtils.cp_r(files, options[:dotfiles]) unless File.directory? options[:dotfiles]
 
 Dir["#{options[:dotfiles]}/**/*"].each { |file|
-  lib = Dir["#{files}/**/*"].select { |f| File.basename(f) == File.basename(file) }
-  next if     lib.empty?
-  next unless lib.first.end_with? '.txt'
+  lib = Dir["#{files}/**/*"].select { |f| File.basename(f) == File.basename(file) }.first
+  next unless lib
+  next unless lib.end_with? '.txt'
 
-  if File.read(lib.first) != File.read(file)
-    FileUtils.cp lib.first, options[:dotfiles]
+  if File.read(lib) != File.read(file)
+    FileUtils.cp lib, options[:dotfiles]
     puts "'#{file}' has been updated."
   end
+}
+
+new_files = Dir["#{files}/**/*"].map { |f| File.basename(f) } - Dir["#{options[:dotfiles]}/**/*"].map { |f| File.basename(f) }
+new_files.each { |new_file|
+  FileUtils.cp File.join(files, new_file), options[:dotfiles]
 }
 
 Cinch::Bot.new {
