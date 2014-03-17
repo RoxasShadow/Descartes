@@ -13,6 +13,7 @@
 ##
 
 require 'assonnato'
+require 'json'
 
 class Descartes
   class Pigro
@@ -30,10 +31,10 @@ class Descartes
         options = { user: user.join             }
       end
 
-      host  = get_host 'pigro.txt'
-      shows = Assonnato::Show.new host
+      host  = get_host
+      shows = Assonnato.new(host).show
 
-      series = shows.all!(:ongoing, options) + shows.all!(:dropped, options) + shows.all!(:finished, options)
+      series = shows.all(:ongoing, options) + shows.all(:dropped, options) + shows.all(:finished, options)
 
       if series.empty?
         if options.has_key? :role
@@ -63,17 +64,17 @@ class Descartes
       n_ep    = (s.last == 'last' || s.last.numeric?) ? s.pop : nil
       keyword = s.join
 
-      host     = get_host 'pigro.txt'
-      shows    = Assonnato::Show.new    host
-      episodes = Assonnato::Episode.new host
+      host     = get_host
+      shows    = Assonnato.new(host).show
+      episodes = Assonnato.new(host).episode
 
-      series = shows.search! keyword
+      series = shows.search keyword
 
       if series.empty?
         m.reply 'Series not found.'
       else
         series.take(5).each { |s|
-          show = shows.get!(s.name).first
+          show = shows.get(s.name).first
 
           if n_ep.nil?
             a = show.status.downcase.start_with?(?o) ?  'an' : ?a
@@ -92,7 +93,7 @@ class Descartes
               }
             }[0..-4]
           elsif n_ep == 'last'
-            episode = episodes.last!(:ongoing).select { |ep| ep.show_name == s.name }.last
+            episode = episodes.last(:ongoing).select { |ep| ep.show_name == s.name }.last
 
             if episode
               m.reply ("#{show.name.colorize} ##{episode.episode}".colorize + ' - ').tap { |staff|
@@ -121,7 +122,7 @@ class Descartes
               m.reply "#{show.name.colorize} has no episodes yet."
             end
           else
-            episodes = episodes.get! show.name, n_ep.to_i
+            episodes = episodes.get show.name, n_ep.to_i
 
             if episodes.any?
               episodes.each { |ep|
@@ -158,15 +159,47 @@ class Descartes
       end
     end
 
-    def get_host(f)
-      file = File.join $options[:dotfiles], f
+    match /pigro (.+) - (.+) - (.+) - (.+)/, method: :edit_episode
+    def edit_episode(m, show, episode, field, status)
+      user      = get_user m.user.nick
+      host      = get_host
+      assonnato = Assonnato.new host
+
+      if user
+        login = assonnato.user.login user['username'], user['password']
+        if login['status'] == 'error'
+          m.reply login['message']
+        else
+          episode = assonnato.episode.edit show, episode.to_i, { field.to_sym => status.to_sym }
+          m.reply episode['message']
+
+          assonnato.user.logout
+        end
+      else
+        m.reply 'You are not recognized.'
+      end
+    end
+
+    def get_user(nickname)
+      file = File.join $options[:dotfiles], 'pigro.json'
+
+      if File.exists? file
+        users = JSON.parse File.read(file)
+        users.select { |user| user['nicknames'].first.values.include? nickname }.last
+      else
+        false
+      end
+    end
+
+    def get_host
+      file = File.join $options[:dotfiles], 'pigro.txt'
 
       if File.exists? file
         url = File.read(file).strip
         return url unless url.empty?
-      end       
+      end
       
-      'http://pigro.omnivium.it'
+      'pigro.omnivium.it'
     end
   end
 end
