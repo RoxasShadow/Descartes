@@ -159,11 +159,36 @@ class Descartes
       end
     end
 
-    match /pigro (.+) - (.+) - (.+) - (.+)/, method: :edit_episode
-    def edit_episode(m, show, episode, field, status)
-      user      = get_user m.user.nick
+    match /pigro (.+)/, method: :edit_episode
+    def edit_episode(m, things)
+      if not m.user.authed?
+        m.reply 'You have to login first.'
+        return
+      end
+
+      things  = things.split ' '
+      len     = things.length
+      status  = things.pop
+      field   = things.pop
+      episode = things.pop
+      show    = things.join ' '
+
+      if len < 4 || !episode.numeric?
+        m.reply 'usage: !pigro SHOW EPISODE FIELD STATUS'
+        return
+      end
+
       host      = get_host
+      user      = get_user m.user.nick
       assonnato = Assonnato.new host
+
+      series = assonnato.show.search show
+      if series.length != 1
+        m.reply 'You should refine your search.'
+        return
+      else
+        show = series.first.name
+      end
 
       if user
         login = assonnato.user.login user['username'], user['password']
@@ -185,7 +210,9 @@ class Descartes
 
       if File.exists? file
         users = JSON.parse File.read(file)
-        users.select { |user| user['nicknames'].first.values.include? nickname }.last
+        users.select { |user|
+          user['nicknames'].select { |n| n['nickname'] == nickname }
+        }.last
       else
         false
       end
