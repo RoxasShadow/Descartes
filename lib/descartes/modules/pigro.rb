@@ -170,9 +170,11 @@ class Descartes
       len     = things.length
 
       if things.last.numeric?
+        m.reply 1
         episode = things.pop
         show    = things.join ' '
       elsif len >= 4
+        m.reply 2
         status  = things.pop
         field   = things.pop
         episode = things.pop
@@ -199,14 +201,15 @@ class Descartes
         if login['status'] == 'error'
           m.reply login['message']
         else
-          if !defined?(field) || !defined?(status)
+          if !field || !status
             [ :translation, :editing, :checking, :timing, :typesetting, :encoding, :qchecking ].each { |f|
-              episode = assonnato.episode.edit show, episode.to_i, { f => :done }
-              m.reply "#{f}: #{episode['message']}"
+              ep = assonnato.episode.edit show, episode.to_i, { f => :done }
+              m.reply("#{f}: #{ep['message']}") if ep['status'] != 'success'
             }
+            m.reply "The episode has been edited."
           else
-            episode = assonnato.episode.edit show, episode.to_i, { field.to_sym => status.to_sym }
-            m.reply episode['message']
+            ep = assonnato.episode.edit show, episode.to_i, { field.to_sym => status.to_sym }
+            m.reply ep['message']
           end
 
           assonnato.user.logout
