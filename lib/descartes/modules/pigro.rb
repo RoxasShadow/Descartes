@@ -168,12 +168,16 @@ class Descartes
 
       things  = things.split ' '
       len     = things.length
-      status  = things.pop
-      field   = things.pop
-      episode = things.pop
-      show    = things.join ' '
 
-      if len < 2 || !episode.numeric?
+      if things.last.numeric?
+        episode = things.pop
+        show    = things.join ' '
+      elsif len >= 4
+        status  = things.pop
+        field   = things.pop
+        episode = things.pop
+        show    = things.join ' '
+      else
         m.reply 'usage: !pigro SHOW EPISODE [FIELD] [STATUS]'
         return
       end
@@ -195,7 +199,7 @@ class Descartes
         if login['status'] == 'error'
           m.reply login['message']
         else
-          if field.nil? || status.nil?
+          if !defined?(field) || !defined?(status)
             [ :translation, :editing, :checking, :timing, :typesetting, :encoding, :qchecking ].each { |f|
               episode = assonnato.episode.edit show, episode.to_i, { f => :done }
               m.reply "#{f}: #{episode['message']}"
