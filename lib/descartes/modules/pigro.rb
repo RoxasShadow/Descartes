@@ -170,11 +170,9 @@ class Descartes
       len     = things.length
 
       if things.last.numeric?
-        m.reply 1
         episode = things.pop
         show    = things.join ' '
       elsif len >= 4
-        m.reply 2
         status  = things.pop
         field   = things.pop
         episode = things.pop
