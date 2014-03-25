@@ -62,7 +62,7 @@ class Descartes
     def by_show(m, keyword)
       s       = keyword.split
       n_ep    = (s.last == 'last' || s.last.numeric?) ? s.pop : nil
-      keyword = s.join
+      keyword = s.join ' '
 
       host     = get_host
       shows    = Assonnato.new(host).show
