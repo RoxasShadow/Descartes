@@ -19,19 +19,32 @@ class Descartes
   class Crunchybot
     include Cinch::Plugin
 
-    match  /\.cr$/, use_prefix: false, method: :today
+    match  /^\.cr$/, use_prefix: false, method: :today
     def today(m)
       crunchyroll   = Crunchyroll.today
-      not_aired     = crunchyroll.reject { |h| h[:aired] }
-      already_aired = (crunchyroll - not_aired).map { |r| r[:title].colorize }.flatten.join(', ')[0..-2]
+
+      aired    = crunchyroll.select { |h| h[:airs] == :aired    }.map { |r| r[:title].colorize }.flatten.join(', ')[0..-2]
+      tomorrow = crunchyroll.select { |h| h[:airs] == :tomorrow }
+      today    = crunchyroll.select { |h| h[:airs] == :today    }
 
       m.reply "Gli anime di oggi su #{'Crunchyroll'.colorize}:"
 
-      not_aired.each { |series|
+      today.each { |series|
         m.reply "#{series[:title].colorize} (tra #{series[:left].to_ita.colorize})"
       }
+
+      m.reply '' if today.any?
+
+      if tomorrow.any?
+        m.reply "Domani trasmetterà (per via del fuso):"
+        tomorrow.each { |series|
+          m.reply "#{series[:title].colorize} (tra #{series[:left].to_ita.colorize})"
+        }
+      end
+
+      m.reply '' if tomorrow.any?
       
-      m.reply "Sono stati già trasmessi: #{already_aired}."
+      m.reply "Sono stati già trasmessi: #{aired}." unless aired.empty?
     end
 
     match  /\.cr (.+)/, use_prefix: false, method: :get
