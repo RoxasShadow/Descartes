@@ -22,8 +22,8 @@ class Descartes
     match  /\.cr$/, use_prefix: false, method: :today
     def today(m)
       crunchyroll   = Crunchyroll.today
-      not_aired     = crunchyroll.reject            { |r| r[:left].include? 'days' }
-      already_aired = (crunchyroll - not_aired).map { |r| r[:title].colorize       }.flatten.join(', ')[0..-2]
+      not_aired     = crunchyroll.reject { |h| h[:aired] }
+      already_aired = (crunchyroll - not_aired).map { |r| r[:title].colorize }.flatten.join(', ')[0..-2]
 
       m.reply "Gli anime di oggi su #{'Crunchyroll'.colorize}:"
 
