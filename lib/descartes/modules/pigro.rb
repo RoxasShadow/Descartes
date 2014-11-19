@@ -1,14 +1,14 @@
 ##
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #                    Version 2, December 2004
-# 
+#
 # Everyone is permitted to copy and distribute verbatim or modified
 # copies of this license document, and changing it is allowed as long
 # as the name is changed.
-# 
+#
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-# 
+#
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 ##
 
@@ -161,13 +161,13 @@ class Descartes
 
     match /pigro (.+)/, method: :edit_episode
     def edit_episode(m, things)
-      if not m.user.authed?
-        m.reply 'You have to login first.'
+      unless m.user.authed?
+        m.reply 'You are not authorized to do this.'
         return
       end
 
-      things  = things.split ' '
-      len     = things.length
+      things = things.split ' '
+      len    = things.length
 
       if things.last.numeric?
         episode = things.pop
@@ -237,7 +237,7 @@ class Descartes
         url = File.read(file).strip
         return url unless url.empty?
       end
-      
+
       'pigro.omnivium.it'
     end
   end
