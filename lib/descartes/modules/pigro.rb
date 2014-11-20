@@ -203,7 +203,7 @@ class Descartes
             fails = []
             [ :translation, :editing, :checking, :timing, :typesetting, :encoding, :qchecking ].each do |f|
               ep = assonnato.episode.edit show, episode.to_i, { f => :done }
-              fails << [f, ep['message'] if ep['status'] != 'success'
+              fails << [f, ep['message']] if ep['status'] != 'success'
             end
 
             if fails.length == 7
