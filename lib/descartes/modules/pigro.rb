@@ -28,7 +28,7 @@ class Descartes
         user.pop
         options = { user: user.join, role: role }
       else
-        options = { user: user.join             }
+        options = { user: user.join }
       end
 
       host  = get_host
@@ -200,11 +200,19 @@ class Descartes
           m.reply login['message']
         else
           if !field || !status
-            [ :translation, :editing, :checking, :timing, :typesetting, :encoding, :qchecking ].each { |f|
+            fails = []
+            [ :translation, :editing, :checking, :timing, :typesetting, :encoding, :qchecking ].each do |f|
               ep = assonnato.episode.edit show, episode.to_i, { f => :done }
-              m.reply("#{f}: #{ep['message']}") if ep['status'] != 'success'
-            }
-            m.reply "The episode has been edited."
+              fails << [f, ep['message'] if ep['status'] != 'success'
+            end
+
+            if fails.length == 7
+              m.reply "The episode has not been edited. Maybe it doesn't exist yet?"
+            elsif fails.any?
+              fails.each { |field, error| m.reply("#{field}: #{ep['message']}") }
+            else
+              m.reply "The episode has been edited."
+            end
           else
             ep = assonnato.episode.edit show, episode.to_i, { field.to_sym => status.to_sym }
             m.reply ep['message']
