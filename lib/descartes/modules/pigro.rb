@@ -21,14 +21,14 @@ class Descartes
 
     match /staff (.+)/, method: :by_staff
     def by_staff(m, user)
-      user = user.split
+      user = user.split ' '
       role = user.last.to_sym.downcase
 
       if [ :translator, :editor, :checker, :timer, :typesetter, :encoder, :qchecker ].include? role
         user.pop
-        options = { user: user.join, role: role }
+        options = { user: user.join(' '), role: role }
       else
-        options = { user: user.join }
+        options = { user: user.join(' ') }
       end
 
       host  = get_host
@@ -42,6 +42,7 @@ class Descartes
         else
           m.reply "#{options[:user].colorize} hasn't worked to any series."
         end
+
         return
       end
 
@@ -52,9 +53,7 @@ class Descartes
           str << "#{options[:user].colorize} has worked on "
         end
 
-        series.each { |s|
-          str << "#{s.name.colorize}, "
-        }
+        series.each { |s| str << "#{s.name.colorize}, " }
       }[0..-3]
     end
 
