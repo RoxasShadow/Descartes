@@ -2,14 +2,14 @@
 ##
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #                    Version 2, December 2004
-# 
+#
 # Everyone is permitted to copy and distribute verbatim or modified
 # copies of this license document, and changing it is allowed as long
 # as the name is changed.
-# 
+#
 #            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 #   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-# 
+#
 #  0. You just DO WHAT THE FUCK YOU WANT TO.
 ##
 
@@ -78,9 +78,9 @@ Cinch::Bot.new {
     c.user     = 'Descartes'
     c.server   = options[:server]
     c.channels = options[:channels]
-    
-    c.plugins.plugins  = [Cinch::Plugins::Login] + Descartes.load(options)
-    c.plugins.options[Cinch::Plugins::Login] = { :password => options[:password] }
+
+    c.plugins.plugins = [Cinch::Plugins::Login] + Descartes.load(options)
+    c.plugins.options[Cinch::Plugins::Login] = { password: options[:password] }
   end
 
   on :message, '!help' do |m|
@@ -128,7 +128,15 @@ Cinch::Bot.new {
     m.reply ?`
   end
 
+  on :message, "!m" do |m|
+    m.reply ?µ
+  end
+
   on :message, '!version' do |m|
-    m.reply Descartes.version
+    m.reply Descartes::VERSION
+  end
+
+  on :message, '!modules' do |m|
+    m.reply Descartes.constants.join(', ')
   end
 }.start
