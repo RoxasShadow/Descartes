@@ -128,7 +128,7 @@ Cinch::Bot.new {
     m.reply ?`
   end
 
-  on :message, "!m" do |m|
+  on :message, /!m/ do |m|
     m.reply ?µ
   end
 
