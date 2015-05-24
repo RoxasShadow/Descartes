@@ -2,17 +2,17 @@ PATH
   remote: .
   specs:
     descartes (0.8.6.1)
-      arnaldo
-      assonnato
-      cinch
-      cinch-colorize
-      cinch-login
-      crunchyroll (~> 0.9.8)
-      htmlentities
-      json
-      nokogiri
-      rockstar
-      treccani
+      arnaldo (~> 0.1)
+      assonnato (~> 0.8)
+      cinch (~> 2.2)
+      cinch-colorize (~> 0.3)
+      cinch-login (~> 0.1)
+      crunchyroll (~> 0.9, >= 0.9.8)
+      htmlentities (~> 4.3)
+      json (~> 1.8)
+      nokogiri (~> 1.6)
+      rockstar (~> 0.8)
+      treccani (~> 0.3)
 
 GEM
   remote: https://rubygems.org/

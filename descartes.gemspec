@@ -15,16 +15,16 @@ Gem::Specification.new { |s|
   s.files         = Dir.glob('lib/**/*')
   s.executables   = 'descartes'
 
-  s.add_runtime_dependency 'cinch'
-  s.add_runtime_dependency 'cinch-login'
-  s.add_runtime_dependency 'cinch-colorize'
+  s.add_runtime_dependency 'cinch',          '~> 2.2'
+  s.add_runtime_dependency 'cinch-login',    '~> 0.1'
+  s.add_runtime_dependency 'cinch-colorize', '~> 0.3'
 
-  s.add_runtime_dependency 'nokogiri'
-  s.add_runtime_dependency 'crunchyroll', '~> 0.9.8'
-  s.add_runtime_dependency 'htmlentities'
-  s.add_runtime_dependency 'json'
-  s.add_runtime_dependency 'treccani'
-  s.add_runtime_dependency 'rockstar'
-  s.add_runtime_dependency 'assonnato'
-  s.add_runtime_dependency 'arnaldo'
+  s.add_runtime_dependency 'nokogiri',       '~> 1.6'
+  s.add_runtime_dependency 'crunchyroll',    '~> 0.9', '>= 0.9.8'
+  s.add_runtime_dependency 'htmlentities',   '~> 4.3'
+  s.add_runtime_dependency 'json',           '~> 1.8'
+  s.add_runtime_dependency 'treccani',       '~> 0.3'
+  s.add_runtime_dependency 'rockstar',       '~> 0.8'
+  s.add_runtime_dependency 'assonnato',      '~> 0.8'
+  s.add_runtime_dependency 'arnaldo',        '~> 0.1'
 }
