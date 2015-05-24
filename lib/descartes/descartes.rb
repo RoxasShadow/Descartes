@@ -31,9 +31,11 @@ class Descartes
         end
       end
 
-      return Descartes.constants.map do |p|
+      plugins = Descartes.constants.map do |p|
         "Descartes::#{p}".split('::').inject(Object) { |o, c| o.const_get c }
       end
+
+      plugins.select { |plugin| plugin.is_a?(Class) && plugin.include?(Cinch::Plugin) }
     end
   end
 end
