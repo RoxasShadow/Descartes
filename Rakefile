@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby
 require 'rake'
 
-task :default => [ :build, :install, :run ]
+task default: [ :build, :install, :run ]
 
 task :build do
   sh 'gem build *.gemspec'
