@@ -1,5 +1,5 @@
 Descartes
-========
+=========
 A very serious modular ruby bot for IRC. The finest spaghetti code.
 
 Install
