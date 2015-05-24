@@ -1,0 +1,66 @@
+PATH
+  remote: .
+  specs:
+    descartes (0.8.6)
+      arnaldo
+      assonnato
+      cinch
+      cinch-colorize
+      cinch-login
+      crunchyroll (~> 0.9.8)
+      htmlentities
+      json
+      nokogiri
+      rockstar
+      treccani
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (4.2.1)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
+    arnaldo (0.1)
+      htmlentities
+    assonnato (0.8.1)
+    chronic (0.10.2)
+    cinch (2.2.5)
+    cinch-colorize (0.3)
+      cinch
+    cinch-login (0.1)
+      cinch
+    crunchyroll (0.9.8.1)
+      activesupport (~> 4.1)
+      chronic (~> 0.10)
+      nokogiri (~> 1.6)
+      time_difference (~> 0.3)
+    hpricot (0.8.6)
+    htmlentities (4.3.3)
+    i18n (0.7.0)
+    json (1.8.2)
+    mini_portile (0.6.2)
+    minitest (5.6.1)
+    nokogiri (1.6.6.2)
+      mini_portile (~> 0.6.0)
+    rake (10.4.2)
+    rockstar (0.8.1)
+      activesupport (>= 1.4.2)
+      hpricot (>= 0.4.86)
+      i18n (>= 0.5.0)
+      rake (>= 0.10.0)
+    thread_safe (0.3.5)
+    time_difference (0.4.2)
+      activesupport
+    treccani (0.3)
+      nokogiri
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  descartes!
