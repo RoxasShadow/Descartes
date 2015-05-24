@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    descartes (0.8.6.1)
+    descartes (0.8.6.2)
       arnaldo (~> 0.1)
       assonnato (~> 0.8)
       cinch (~> 2.2)
