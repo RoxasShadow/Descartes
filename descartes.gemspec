@@ -2,7 +2,7 @@ Kernel.load 'lib/descartes/version.rb'
 
 Gem::Specification.new { |s|
   s.name          = 'descartes'
-  s.version       = Descartes.version
+  s.version       = Descartes::VERSION
   s.author        = 'Giovanni Capuano'
   s.email         = 'webmaster@giovannicapuano.net'
   s.homepage      = 'http://www.giovannicapuano.net'
