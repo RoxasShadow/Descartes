@@ -19,14 +19,14 @@ class Descartes
       $options[:exclude] ||= []
 
       puts 'Importing modules..'
-      Dir.glob(File.expand_path('../modules/*.rb', __FILE__)).each do |module|
-        name = module.split(?/).last.split(?.).first.downcase
+      Dir.glob(File.expand_path('../modules/*.rb', __FILE__)).each do |plugin|
+        name = plugin.split(?/).last.split(?.).first.downcase
 
         if $options[:exclude].include?(name)
           puts "- Skipping #{name}..."
         else
           print "- Loading #{name}..."
-          require module
+          require plugin
           puts ' done'
         end
       end
