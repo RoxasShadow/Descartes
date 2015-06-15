@@ -26,5 +26,4 @@ Gem::Specification.new { |s|
   s.add_runtime_dependency 'treccani',       '~> 0.3'
   s.add_runtime_dependency 'rockstar',       '~> 0.8'
   s.add_runtime_dependency 'assonnato',      '~> 0.8'
-  s.add_runtime_dependency 'arnaldo',        '~> 0.1'
 }
