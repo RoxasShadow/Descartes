@@ -19,7 +19,7 @@ class Descartes
   class Crunchybot
     include Cinch::Plugin
 
-    match  /^\.cr$/, use_prefix: false, method: :today
+    match /^\.cr$/, use_prefix: false, method: :today
     def today(m)
       crunchyroll = Crunchyroll.today
 
@@ -47,7 +47,7 @@ class Descartes
       m.reply "Sono stati già trasmessi: #{aired}." unless aired.empty?
     end
 
-    match  /^\.cr (.+)$/, use_prefix: false, method: :get
+    match /^\.cr (.+)$/, use_prefix: false, method: :get
     def get(m)
       series = Crunchyroll.get m.params[1].split('.cr ')[1]
 
