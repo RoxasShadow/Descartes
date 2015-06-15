@@ -128,8 +128,8 @@ Cinch::Bot.new {
     m.reply ?`
   end
 
-  on :message, /!m/ do |m|
-    m.reply ?µ
+  on :message, /^!m(.*?)/ do |m, sentence|
+    m.reply "µ#{sentence}"
   end
 
   on :message, '!version' do |m|
@@ -137,6 +137,10 @@ Cinch::Bot.new {
   end
 
   on :message, '!modules' do |m|
-    m.reply Descartes.constants.join(', ')
+    modules = [].tap do |plugins|
+      Descartes.each_module { |path, name| plugins << name }
+    end
+
+    m.reply modules.join(', ')
   end
 }.start
