@@ -24,7 +24,7 @@ class Descartes
 
 			if Time.now < time
 				if @@active_threads.size < 10
-					@@active_threads << Thread.new { sleep (time - Time.now) ; m.reply "#{m.user.nick}: #{msg}" }
+					@@active_threads << Thread.new { sleep (time - Time.now) ; m.reply "#{m.user.nick}: #{msg}" ; @@active_threads.pop }
 					m.reply 'Will be done'
 				else
 					m.reply "Stop, please. It's not like I have an elephant memory"
