@@ -158,58 +158,8 @@ class Descartes
       end
     end
 
-    match /pigro (.+)/, method: :add_episode
-    def add_episode(m, things)
-      unless m.user.authed?
-        m.reply 'You are not authorized to do this.'
-        return
-      end
-
-      things = things.split ' '
-      len    = things.length
-
-      if things.last.numeric?
-        episode = things.pop
-        show    = things.join ' '
-      elsif len >= 4
-        status  = things.pop
-        field   = things.pop
-        episode = things.pop
-        show    = things.join ' '
-      else
-        m.reply 'usage: !pigro SHOW ADD'
-        return
-      end
-
-      host      = get_host
-      user      = get_user m.user.nick
-      assonnato = Assonnato.new host
-
-      series = assonnato.show.search show
-      if series.length != 1
-        m.reply 'You should refine your search.'
-        return
-      else
-        show = series.first.name
-      end
-
-      if user
-        login = assonnato.user.login user['username'], user['password']
-        if login['status'] == 'error'
-          m.reply login['message']
-        else
-          ep = assonnato.episode.add show, episode.to_i
-          m.reply ep['message']
-
-          assonnato.user.logout
-        end
-      else
-        m.reply 'You are not recognized.'
-      end
-    end
-
-    match /pigro (.+)/, method: :edit_episode
-    def edit_episode(m, things)
+    match /pigro (.+)/, method: :episode
+    def episode(m, things)
       unless m.user.authed?
         m.reply 'You are not authorized to do this.'
         return
@@ -248,6 +198,8 @@ class Descartes
         if login['status'] == 'error'
           m.reply login['message']
         else
+          ep = assonnato.episode.add show, episode.to_i
+
           if !field || !status
             fails = []
             [ :translation, :editing, :checking, :timing, :typesetting, :encoding, :qchecking ].each do |f|
