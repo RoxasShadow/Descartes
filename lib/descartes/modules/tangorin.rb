@@ -25,9 +25,10 @@ class Descartes
 				page = Nokogiri::HTML open(URI.escape("http://tangorin.com/general/#{search}")).read, nil, 'utf-8'
 
 				romaji = page.at_xpath('//rt').text.chomp("/")
+				kana = page.at_xpath('//rb').text
 				meaning = page.at_xpath('//span[@class="eng"]').text
 				
-				m.reply "[Tangorin] #{romaji}: #{meaning}"
+				m.reply "[Tangorin] #{kana} (#{romaji}): #{meaning}"
 			rescue; end
 		end
 	end
