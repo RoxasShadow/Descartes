@@ -25,9 +25,11 @@ class Descartes
 				page = Nokogiri::HTML open(url).read, nil, 'utf-8'
 
 				title = page.at_xpath('//td[@class="title"]/a').text.to_s
-				info = page.at_xpath('//td[@class="subtext"]').text.to_s.strip.gsub(" | past | web ", "")
+				info = page.at_xpath('//td[@class="subtext"]').text.to_s.strip
+				comments = info.match(/[0-9]+.comments/).to_s
+				info = info.gsub(/\|.*/, "").rstrip
 				
-				m.reply "[HN] #{title} | #{info}"
+				m.reply "[HN] #{title} | #{info} | #{comments}"
 			rescue; end
 		end
 	end
