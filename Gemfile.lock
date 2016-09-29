@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    descartes (0.9.1)
+    descartes (0.9.2)
       assonnato (~> 0.8)
       cinch (~> 2.2)
       cinch-colorize (~> 0.3)
