@@ -28,9 +28,13 @@ class Descartes
 				kana = page.at_xpath('//rb').text
 				kanji = page.at_xpath('//span[@class="writing"]').text
 				meaning = page.at_xpath('//span[@class="eng"]').text
-				info = page.at_xpath('//i[@class="d-info"]').text.chop.downcase.tr("—","")
-				
-				m.reply "[Tangorin] #{kanji} (#{kana} - #{romaji}): #{meaning} (#{info})"
+				info = page.at_xpath('//i[@class="d-info"]')
+				if !info.nil?
+					info = info.text.chop.downcase.tr("—","")
+					m.reply "[Tangorin] #{kanji} (#{kana} - #{romaji}): #{meaning} (#{info})"
+				else
+					m.reply "[Tangorin] #{kanji} (#{kana} - #{romaji}): #{meaning}"
+				end
 			rescue; end
 		end
 	end
