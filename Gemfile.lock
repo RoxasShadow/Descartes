@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    descartes (0.8.10)
+    descartes (0.9.1)
       assonnato (~> 0.8)
       cinch (~> 2.2)
       cinch-colorize (~> 0.3)
@@ -16,7 +16,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.2.6)
+    activesupport (4.2.7.1)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -24,7 +24,7 @@ GEM
       tzinfo (~> 1.1)
     assonnato (0.8.2)
     chronic (0.10.2)
-    cinch (2.3.1)
+    cinch (2.3.2)
     cinch-colorize (0.3)
       cinch
     cinch-login (0.1)
@@ -38,11 +38,13 @@ GEM
     htmlentities (4.3.4)
     i18n (0.7.0)
     json (1.8.3)
-    mini_portile2 (2.0.0)
-    minitest (5.8.4)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
-    rake (11.1.0)
+    mini_portile2 (2.1.0)
+    minitest (5.9.0)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
+    pkg-config (1.1.7)
+    rake (11.3.0)
     rockstar (0.8.1)
       activesupport (>= 1.4.2)
       hpricot (>= 0.4.86)
@@ -63,4 +65,4 @@ DEPENDENCIES
   descartes!
 
 BUNDLED WITH
-   1.11.2
+   1.13.1
