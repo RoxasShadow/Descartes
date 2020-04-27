@@ -13,16 +13,20 @@ Gem::Specification.new { |s|
 
   s.require_paths = ['lib']
   s.files         = Dir.glob('lib/**/*')
-  s.executables   = 'descartes'
+  #s.executables   = 'descartes'
 
   s.add_runtime_dependency 'cinch',          '~> 2.2'
   s.add_runtime_dependency 'cinch-login',    '~> 0.1'
   s.add_runtime_dependency 'cinch-colorize', '~> 0.3'
 
-  s.add_runtime_dependency 'nokogiri',       '~> 1.6'
+  s.add_runtime_dependency 'discordrb',      '~> 3.3'
+  s.add_runtime_dependency 'pry',            '~> 0.13'
+  s.add_runtime_dependency 'pry-byebug',            '~> 3.9'
+
+  s.add_runtime_dependency 'nokogiri',       '~> 1.10'
   s.add_runtime_dependency 'crunchyroll',    '~> 0.9', '>= 0.9.8'
   s.add_runtime_dependency 'htmlentities',   '~> 4.3'
-  s.add_runtime_dependency 'json',           '~> 1.8'
+  s.add_runtime_dependency 'json',           '~> 2.3'
   s.add_runtime_dependency 'treccani',       '~> 0.3'
   s.add_runtime_dependency 'rockstar',       '~> 0.8'
   s.add_runtime_dependency 'assonnato',      '~> 0.8'

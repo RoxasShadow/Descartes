@@ -1,0 +1,164 @@
+#!/usr/bin/env ruby
+##
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+##
+
+require 'descartes'
+require 'optparse'
+require 'fileutils'
+
+options = {
+  client_id: '',
+  token: '',
+  dotfiles: File.join(ENV['HOME'], '.descartes'),
+  exclude: [],
+  name: 'Descartes'
+}
+
+OptionParser.new { |o|
+  o.on '-c', '--client-id CLIENT_ID', 'client id' do |client_id|
+    options[:client_id] = client_id
+  end
+
+  o.on '-s', '--client-secret CLIENT_ID', 'client secret' do |client_secret|
+    options[:client_ecret] = client_secret
+  end
+
+  o.on '-d', '--dotfiles PATH', 'folder where store config files' do |dotfiles|
+    options[:dotfiles] = dotfiles
+  end
+
+  o.on '-n', '--name NAME', 'name of the bot' do |name|
+    options[:name] = name
+  end
+
+  o.on '-e', '--exclude module1,module2', 'exclude modules' do |exclude|
+    options[:exclude] = exclude.split(?,).map { |s| s.strip.downcase }
+  end
+}.parse!
+
+files = File.join File.dirname(__FILE__), '../../lib/descartes/modules/files'
+FileUtils.cp_r(files, options[:dotfiles]) unless File.directory? options[:dotfiles]
+
+Dir["#{options[:dotfiles]}/**/*"].each { |file|
+  lib = Dir["#{files}/**/*"].select { |f| File.basename(f) == File.basename(file) }.first
+  next unless lib
+  next unless lib.end_with? '.txt'
+
+  if File.read(lib) != File.read(file)
+    FileUtils.cp lib, options[:dotfiles]
+    puts "'#{file}' has been updated."
+  end
+}
+
+new_files = Dir["#{files}/**/*"].map { |f| File.basename(f) } - Dir["#{options[:dotfiles]}/**/*"].map { |f| File.basename(f) }
+new_files.each { |new_file|
+  FileUtils.cp File.join(files, new_file), options[:dotfiles]
+}
+
+bot = Discordrb::Commands::CommandBot.new token: options[:token], client_id: options[:client_id]
+bot.name = options[:name]
+plugins = Descartes.load(options)
+
+bot.message(with_text: '!help') do |e|
+  plugins.each do |plugin|
+
+    plugin.handlers.each do |handler|
+      pattern = handler.pattern
+      name    = plugin.to_s.split('::')[1].split(?:)[0]
+
+      prefix = case pattern.prefix
+        when Regexp then pattern.prefix.source
+        when String then pattern.prefix
+        else            ''
+      end
+
+      suffix = case pattern.suffix
+        when Regexp then pattern.suffix.source
+        when String then pattern.suffix
+        else             ''
+      end
+
+      regex = case pattern.pattern
+        when Regexp then pattern.pattern.source
+        when String then pattern.pattern
+        else             ''
+      end
+
+      e.respond regex.empty? ? name : "#{name}: #{prefix}#{regex}#{suffix}"
+    end
+  end
+end
+
+bot.message(start_with: '!m') do |e|
+  e.respond "µ#{e.message.to_s[2..-1]}"
+end
+
+bot.message(with_text: '!version') do |e|
+  e.respond Descartes::VERSION
+end
+
+bot.message(with_text: '!modules') do |e|
+  modules = [].tap do |plugins|
+    Descartes.each_module { |path, name| plugins << name }
+  end
+
+  e.respond modules.join(', ')
+end
+
+bot.define_singleton_method(:config) {[] }
+bot.define_singleton_method(:plugins) { plugins }
+
+module Cinch
+  module Plugin
+    def initialize(_); end
+  end
+end
+
+class Msg
+  def initialize(e)
+    @e = e
+  end
+
+  attr_reader :e
+
+  def reply(s)
+    e.respond(s)
+  end
+
+  def params
+    [nil, message]
+  end
+
+  def message
+    e.content
+  end
+end
+
+plugins.each do |plugin|
+  plugin.matchers.each do |matcher|
+
+    wrap = OpenStruct.new(bot: OpenStruct.new(nick: bot.name))
+    prefix = plugin.prefix.call(wrap) if plugin.prefix && plugin.prefix.respond_to?(:call)
+
+    bot.message(start_with: prefix || plugin.prefix, contains: matcher.pattern) do |e|
+      m = Msg.new(e)
+      matches = (m.message.match(matcher.pattern).to_a rescue []) - [m.message]
+      matches.unshift(m)
+      plugin.new(e).public_send(matcher.method, *matches)
+    end
+  end
+end
+
+
+bot.run

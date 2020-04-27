@@ -16,6 +16,8 @@ require 'cinch'
 require 'cinch/plugins/login'
 require 'cinch/colorize'
 
+require 'discordrb'
+
 require 'descartes/utils'
 require 'descartes/descartes'
 require 'descartes/version'

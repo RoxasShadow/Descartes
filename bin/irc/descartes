@@ -52,7 +52,7 @@ OptionParser.new { |o|
   end
 }.parse!
 
-files = File.join File.dirname(__FILE__), '../lib/descartes/modules/files'
+files = File.join File.dirname(__FILE__), '../../lib/descartes/modules/files'
 FileUtils.cp_r(files, options[:dotfiles]) unless File.directory? options[:dotfiles]
 
 Dir["#{options[:dotfiles]}/**/*"].each { |file|
